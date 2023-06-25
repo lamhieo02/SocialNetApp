@@ -1,9 +1,9 @@
 package authenandpoststorage
 
 import (
-	"github.com/lamhieo02/socialnetapp/config"
+	"context"
+
 	"github.com/lamhieo02/socialnetapp/internal/entities"
-	mysqlpkg "github.com/lamhieo02/socialnetapp/pkg/proto/mysql"
 	"gorm.io/gorm"
 )
 
@@ -11,16 +11,21 @@ type authenAndPostStorage struct {
 	db *gorm.DB
 }
 
-type AuthenAndPostStorageInterface interface {
-	CreateUser(*entities.UserRegister)  error
+func NewAuthenticateAndPostStorage(db *gorm.DB) *authenAndPostStorage {
+	return &authenAndPostStorage{db: db}
 }
 
-func NewAuthenticateAndPostStorage(conf *config.Config) (*authenAndPostStorage, error) {
-	db, err := mysqlpkg.NewMYSQLConnection(&conf.Mysql)
-	if err != nil {
+func (storage *authenAndPostStorage) CreateUser(ctx context.Context, user *entities.UserRegister) (*uint, error) {
+	db := storage.db.Begin()
+
+	if err := db.Table(user.TableName()).Create(user).Error; err != nil {
+		db.Rollback()
 		return nil, err
 	}
-	return &authenAndPostStorage{
-		db: db,
-	}, nil
+
+	if err := db.Commit().Error; err != nil {
+		db.Rollback()
+		return nil, err
+	}
+	return &user.ID, nil
 }

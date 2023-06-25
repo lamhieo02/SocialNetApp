@@ -3,13 +3,16 @@ mysql:
   Host: localhost
   #ContainerName: go01_mysql
   Port: 3306
-  User: root
+  Username: root
   Password: 109339Lam@
-  DBName: socialnetapp
+  Database: socialnetapp
 
 redis:
   #Host: redis
   Host: localhost
   Port: 6379
   Password: ""
-  DB: 0
+  Database: 0
+
+authen_and_post_service:
+  Port: 19001

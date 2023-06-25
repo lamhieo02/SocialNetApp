@@ -8,7 +8,7 @@ import (
 )
 
 type AuthenAndPostService interface {
-	RegisterUser(ctx context.Context, req *entities.UserRegister)  error
+	RegisterUser(ctx context.Context, req *entities.UserRegister) (*uint, error)
 }
 
 type authenAndPostHandler struct {
@@ -17,10 +17,28 @@ type authenAndPostHandler struct {
 }
 
 func (hdl *authenAndPostHandler) CreateUser(ctx context.Context, req *authen_and_post.UserDetailInfo) (*authen_and_post.CreateUserResponse, error) {
-	return nil, nil
+	userInfo := &entities.UserRegister{
+		UserName: req.UserName,
+		DateOfBirth: req.Dob,
+		Password: req.Password,
+		Email: req.Email,
+		FirstName: req.FirstName,
+		LastName: req.LastName,
+	}
+
+	id, err := hdl.authenAndPostService.RegisterUser(ctx, userInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &authen_and_post.CreateUserResponse{
+		UserId: int64(*id),
+		Status: *authen_and_post.CreateUserStatus_CreateUserStatusOK.Enum(),
+	}
+	return resp, nil
 }
 
 
-func NewAuthenticateAndPostHandler(auAndPostSrv AuthenAndPostService) (*authenAndPostHandler, error) {
-	return &authenAndPostHandler{authenAndPostService: auAndPostSrv}, nil
+func NewAuthenticateAndPostHandler(auAndPostSrv AuthenAndPostService) *authenAndPostHandler {
+	return &authenAndPostHandler{authenAndPostService: auAndPostSrv}
 }

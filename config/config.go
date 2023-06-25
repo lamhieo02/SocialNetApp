@@ -1,10 +1,17 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"github.com/spf13/viper"
+)
 
 type Config struct {
-	Mysql MysqlConfig
+	Mysql MysqlConfig 
  	Redis RedisConfig
+	AuthenAndPostService AuthenAndPostServiceConfig `mapstructure:"authen_and_post_service"`
+}
+
+type AuthenAndPostServiceConfig struct {
+	Port int
 }
 
 type MysqlConfig struct {
@@ -24,7 +31,7 @@ type RedisConfig struct {
 
 func LoadConfig() (*Config, error) {
 	v := viper.New()
-	v.SetConfigFile("config.yml")
+	v.SetConfigFile("./config/config.yml")
 
 	if err := v.ReadInConfig(); err != nil {
 		return nil, err
@@ -34,6 +41,5 @@ func LoadConfig() (*Config, error) {
 	if err := v.Unmarshal(&c); err != nil {
 		return nil, err
 	}
-
 	return &c, nil
 }

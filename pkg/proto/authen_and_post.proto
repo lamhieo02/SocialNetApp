@@ -51,7 +51,8 @@ message UserLoginResponse {
 }
 
 message CreateUserResponse {
-    CreateUserStatus status = 1;
+    int64 user_id = 1;
+    CreateUserStatus status = 2;
 }
 
 message EditUserResponse {

@@ -7,21 +7,22 @@ import (
 )
 
 type AuthenAndPostStorage interface {
-	CreateUser(context.Context, *entities.UserRegister)  error
+	CreateUser(context.Context, *entities.UserRegister)  (*uint, error)
 }
 
 type authenAndPostService struct {
 	authenAndPostStorage AuthenAndPostStorage
 }
 
-func (service *authenAndPostService) RegisterUser(ctx context.Context, req *entities.UserRegister)  error {
-	if err := service.authenAndPostStorage.CreateUser(ctx, req); err != nil {	
-		return err
+func (service *authenAndPostService) RegisterUser(ctx context.Context, req *entities.UserRegister) (*uint, error) {
+	id, err := service.authenAndPostStorage.CreateUser(ctx, req)
+	if err != nil {	
+		return nil, err
 	}
-	return nil
+	return id, nil
 }
 
 
-func NewAuthenticateAndPostService(authenAndPostStorage AuthenAndPostStorage) (*authenAndPostService, error) {
-	return &authenAndPostService{authenAndPostStorage: authenAndPostStorage}, nil
+func NewAuthenticateAndPostService(authenAndPostStorage AuthenAndPostStorage) *authenAndPostService {
+	return &authenAndPostService{authenAndPostStorage: authenAndPostStorage}
 }
