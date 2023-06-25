@@ -22,11 +22,12 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthenticateAndPostClient interface {
-	CheckUserAuthentication(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserResult, error)
-	CreateUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*UserResult, error)
-	EditUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*UserResult, error)
-	GetUserFollower(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserFollower, error)
+	CheckUserAuthentication(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserLoginResponse, error)
+	CreateUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	EditUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*EditUserResponse, error)
+	GetUserFollower(ctx context.Context, in *UserFollowerRequest, opts ...grpc.CallOption) (*UserFollower, error)
 	GetPostDetail(ctx context.Context, in *GetPostRequest, opts ...grpc.CallOption) (*Post, error)
+	GetInfoUser(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserDetailInfo, error)
 }
 
 type authenticateAndPostClient struct {
@@ -37,8 +38,8 @@ func NewAuthenticateAndPostClient(cc grpc.ClientConnInterface) AuthenticateAndPo
 	return &authenticateAndPostClient{cc}
 }
 
-func (c *authenticateAndPostClient) CheckUserAuthentication(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserResult, error) {
-	out := new(UserResult)
+func (c *authenticateAndPostClient) CheckUserAuthentication(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserLoginResponse, error) {
+	out := new(UserLoginResponse)
 	err := c.cc.Invoke(ctx, "/authen_and_post.AuthenticateAndPost/CheckUserAuthentication", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,8 +47,8 @@ func (c *authenticateAndPostClient) CheckUserAuthentication(ctx context.Context,
 	return out, nil
 }
 
-func (c *authenticateAndPostClient) CreateUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*UserResult, error) {
-	out := new(UserResult)
+func (c *authenticateAndPostClient) CreateUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*CreateUserResponse, error) {
+	out := new(CreateUserResponse)
 	err := c.cc.Invoke(ctx, "/authen_and_post.AuthenticateAndPost/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -55,8 +56,8 @@ func (c *authenticateAndPostClient) CreateUser(ctx context.Context, in *UserDeta
 	return out, nil
 }
 
-func (c *authenticateAndPostClient) EditUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*UserResult, error) {
-	out := new(UserResult)
+func (c *authenticateAndPostClient) EditUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*EditUserResponse, error) {
+	out := new(EditUserResponse)
 	err := c.cc.Invoke(ctx, "/authen_and_post.AuthenticateAndPost/EditUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -64,7 +65,7 @@ func (c *authenticateAndPostClient) EditUser(ctx context.Context, in *UserDetail
 	return out, nil
 }
 
-func (c *authenticateAndPostClient) GetUserFollower(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserFollower, error) {
+func (c *authenticateAndPostClient) GetUserFollower(ctx context.Context, in *UserFollowerRequest, opts ...grpc.CallOption) (*UserFollower, error) {
 	out := new(UserFollower)
 	err := c.cc.Invoke(ctx, "/authen_and_post.AuthenticateAndPost/GetUserFollower", in, out, opts...)
 	if err != nil {
@@ -82,15 +83,25 @@ func (c *authenticateAndPostClient) GetPostDetail(ctx context.Context, in *GetPo
 	return out, nil
 }
 
+func (c *authenticateAndPostClient) GetInfoUser(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserDetailInfo, error) {
+	out := new(UserDetailInfo)
+	err := c.cc.Invoke(ctx, "/authen_and_post.AuthenticateAndPost/GetInfoUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthenticateAndPostServer is the server API for AuthenticateAndPost service.
 // All implementations must embed UnimplementedAuthenticateAndPostServer
 // for forward compatibility
 type AuthenticateAndPostServer interface {
-	CheckUserAuthentication(context.Context, *UserInfo) (*UserResult, error)
-	CreateUser(context.Context, *UserDetailInfo) (*UserResult, error)
-	EditUser(context.Context, *UserDetailInfo) (*UserResult, error)
-	GetUserFollower(context.Context, *UserInfo) (*UserFollower, error)
+	CheckUserAuthentication(context.Context, *UserInfo) (*UserLoginResponse, error)
+	CreateUser(context.Context, *UserDetailInfo) (*CreateUserResponse, error)
+	EditUser(context.Context, *UserDetailInfo) (*EditUserResponse, error)
+	GetUserFollower(context.Context, *UserFollowerRequest) (*UserFollower, error)
 	GetPostDetail(context.Context, *GetPostRequest) (*Post, error)
+	GetInfoUser(context.Context, *UserInfoRequest) (*UserDetailInfo, error)
 	mustEmbedUnimplementedAuthenticateAndPostServer()
 }
 
@@ -98,20 +109,23 @@ type AuthenticateAndPostServer interface {
 type UnimplementedAuthenticateAndPostServer struct {
 }
 
-func (UnimplementedAuthenticateAndPostServer) CheckUserAuthentication(context.Context, *UserInfo) (*UserResult, error) {
+func (UnimplementedAuthenticateAndPostServer) CheckUserAuthentication(context.Context, *UserInfo) (*UserLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckUserAuthentication not implemented")
 }
-func (UnimplementedAuthenticateAndPostServer) CreateUser(context.Context, *UserDetailInfo) (*UserResult, error) {
+func (UnimplementedAuthenticateAndPostServer) CreateUser(context.Context, *UserDetailInfo) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedAuthenticateAndPostServer) EditUser(context.Context, *UserDetailInfo) (*UserResult, error) {
+func (UnimplementedAuthenticateAndPostServer) EditUser(context.Context, *UserDetailInfo) (*EditUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EditUser not implemented")
 }
-func (UnimplementedAuthenticateAndPostServer) GetUserFollower(context.Context, *UserInfo) (*UserFollower, error) {
+func (UnimplementedAuthenticateAndPostServer) GetUserFollower(context.Context, *UserFollowerRequest) (*UserFollower, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserFollower not implemented")
 }
 func (UnimplementedAuthenticateAndPostServer) GetPostDetail(context.Context, *GetPostRequest) (*Post, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPostDetail not implemented")
+}
+func (UnimplementedAuthenticateAndPostServer) GetInfoUser(context.Context, *UserInfoRequest) (*UserDetailInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetInfoUser not implemented")
 }
 func (UnimplementedAuthenticateAndPostServer) mustEmbedUnimplementedAuthenticateAndPostServer() {}
 
@@ -181,7 +195,7 @@ func _AuthenticateAndPost_EditUser_Handler(srv interface{}, ctx context.Context,
 }
 
 func _AuthenticateAndPost_GetUserFollower_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserInfo)
+	in := new(UserFollowerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -193,7 +207,7 @@ func _AuthenticateAndPost_GetUserFollower_Handler(srv interface{}, ctx context.C
 		FullMethod: "/authen_and_post.AuthenticateAndPost/GetUserFollower",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticateAndPostServer).GetUserFollower(ctx, req.(*UserInfo))
+		return srv.(AuthenticateAndPostServer).GetUserFollower(ctx, req.(*UserFollowerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -212,6 +226,24 @@ func _AuthenticateAndPost_GetPostDetail_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthenticateAndPostServer).GetPostDetail(ctx, req.(*GetPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticateAndPost_GetInfoUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticateAndPostServer).GetInfoUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authen_and_post.AuthenticateAndPost/GetInfoUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticateAndPostServer).GetInfoUser(ctx, req.(*UserInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -242,6 +274,10 @@ var AuthenticateAndPost_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPostDetail",
 			Handler:    _AuthenticateAndPost_GetPostDetail_Handler,
+		},
+		{
+			MethodName: "GetInfoUser",
+			Handler:    _AuthenticateAndPost_GetInfoUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
