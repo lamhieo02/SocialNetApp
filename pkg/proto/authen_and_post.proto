@@ -83,3 +83,8 @@ message Post {
     bool visible = 5;
     int64 created_at = 6;
 }
+
+message ResponseError {
+    string error = 1;
+    int32 code = 2;
+}

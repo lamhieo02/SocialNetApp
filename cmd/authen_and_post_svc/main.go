@@ -9,8 +9,8 @@ import (
 	authenandposthandler "github.com/lamhieo02/socialnetapp/internal/authen_and_post/handler"
 	authenandpostservice "github.com/lamhieo02/socialnetapp/internal/authen_and_post/service"
 	authenandpoststorage "github.com/lamhieo02/socialnetapp/internal/authen_and_post/storage"
+	mysqlpkg "github.com/lamhieo02/socialnetapp/pkg/mysql"
 	authen_and_post "github.com/lamhieo02/socialnetapp/pkg/proto/authen_and_post/pkg/proto"
-	mysqlpkg "github.com/lamhieo02/socialnetapp/pkg/proto/mysql"
 	"google.golang.org/grpc"
 )
 

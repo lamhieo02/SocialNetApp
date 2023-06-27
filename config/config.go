@@ -31,6 +31,7 @@ type RedisConfig struct {
 
 func LoadConfig() (*Config, error) {
 	v := viper.New()
+
 	v.SetConfigFile("./config/config.yml")
 
 	if err := v.ReadInConfig(); err != nil {

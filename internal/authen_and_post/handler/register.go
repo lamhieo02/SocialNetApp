@@ -3,21 +3,14 @@ package authenandposthandler
 import (
 	"context"
 
-	"github.com/lamhieo02/socialnetapp/internal/entities"
+	authenandpostmodel "github.com/lamhieo02/socialnetapp/internal/authen_and_post/model"
 	authen_and_post "github.com/lamhieo02/socialnetapp/pkg/proto/authen_and_post/pkg/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-type AuthenAndPostService interface {
-	RegisterUser(ctx context.Context, req *entities.UserRegister) (*uint, error)
-}
-
-type authenAndPostHandler struct {
-	authen_and_post.UnimplementedAuthenticateAndPostServer
-	authenAndPostService AuthenAndPostService
-}
-
 func (hdl *authenAndPostHandler) CreateUser(ctx context.Context, req *authen_and_post.UserDetailInfo) (*authen_and_post.CreateUserResponse, error) {
-	userInfo := &entities.UserRegister{
+	userInfo := &authenandpostmodel.UserRegister{
 		UserName: req.UserName,
 		DateOfBirth: req.Dob,
 		Password: req.Password,
@@ -28,7 +21,7 @@ func (hdl *authenAndPostHandler) CreateUser(ctx context.Context, req *authen_and
 
 	id, err := hdl.authenAndPostService.RegisterUser(ctx, userInfo)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
 	resp := &authen_and_post.CreateUserResponse{
@@ -36,9 +29,4 @@ func (hdl *authenAndPostHandler) CreateUser(ctx context.Context, req *authen_and
 		Status: *authen_and_post.CreateUserStatus_CreateUserStatusOK.Enum(),
 	}
 	return resp, nil
-}
-
-
-func NewAuthenticateAndPostHandler(auAndPostSrv AuthenAndPostService) *authenAndPostHandler {
-	return &authenAndPostHandler{authenAndPostService: auAndPostSrv}
 }
