@@ -2,9 +2,9 @@ package utilshasher
 
 import (
 	"crypto/rand"
-	"crypto/sha256"
-	"encoding/hex"
-	"fmt"
+	"encoding/base64"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -12,43 +12,45 @@ const (
 	saltSize = 16 // Size of the salt in bytes
 )
 
-func HashPassword(password string) (string, error) {
-	salt := generateSalt(saltSize)
-	passwordWithSalt := appendSaltAndPassword(salt, password)
-	hashedPassword := hashWithPepper(passwordWithSalt)
-	return hashedPassword, nil
-}
-
-func ComparePassword(hash, password string) error {
-	salt, storedHash := extractSaltAndHash(hash)
-	passwordWithSalt := appendSaltAndPassword(salt, password)
-	computedHash := hashWithPepper(passwordWithSalt)
-	if storedHash != computedHash {
-		return fmt.Errorf("passwords do not match")
+func HashPassword(password string) (string, string, error) {
+	salt := generateSalt(16)
+	// Add salt and pepper to the password
+	saltedPassword := salt + password + pepper
+	// Generate hash
+	hashedPassword, err := generateHash(saltedPassword)
+	if err != nil {
+		return "", "",err
 	}
-	return nil
+	return hashedPassword, salt, nil
 }
 
-func generateSalt(size int) []byte {
+func ComparePassword(hashedPassword, password, salt string) error {
+	// Generate the salted and hashed password for the entered password
+	enteredSaltedPassword := salt + password + pepper
+
+	// Compare the entered password with the stored hashed password
+	err := comparePasswords(hashedPassword, enteredSaltedPassword)
+	return err
+}
+
+
+func generateHash(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedPassword), nil
+}
+
+
+func comparePasswords(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func generateSalt(size int) string {
 	salt := make([]byte, size)
 	_, _ = rand.Read(salt)
-	return salt
-}
+	saltString := base64.URLEncoding.EncodeToString(salt)
 
-func appendSaltAndPassword(salt []byte, password string) string {
-	saltedPassword := append(salt, []byte(password)...)
-	return hex.EncodeToString(saltedPassword)
-}
-
-func hashWithPepper(passwordWithSalt string) string {
-	pepperedPassword := []byte(passwordWithSalt + pepper)
-	hash := sha256.Sum256(pepperedPassword)
-	return hex.EncodeToString(hash[:])
-}
-
-func extractSaltAndHash(hashedPassword string) ([]byte, string) {
-	saltedPassword, _ := hex.DecodeString(hashedPassword)
-	salt := saltedPassword[:saltSize]
-	storedHash := saltedPassword[saltSize:]
-	return salt, hex.EncodeToString(storedHash)
+	return saltString
 }

@@ -4,13 +4,14 @@ USE socialnetapp;
 -- Create the user table
 CREATE TABLE user (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  `password` VARCHAR(50) NOT NULL,
   first_name VARCHAR(50) NOT NULL,
   last_name VARCHAR(50) NOT NULL,
   date_of_birth VARCHAR(20) NOT NULL,
   email VARCHAR(50) NOT NULL ,
   user_name VARCHAR(50) NOT NULL,
-  INDEX idx_username (user_name)
+  `password` VARCHAR(250) NOT NULL,
+  salt VARCHAR(250) NOT NULL,
+  INDEX idx_username (user_name,email)
 );
 
 -- Create the post table

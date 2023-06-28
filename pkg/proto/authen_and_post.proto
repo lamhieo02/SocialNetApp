@@ -3,7 +3,7 @@ option go_package = ".;authen_and_post";
 package authen_and_post;
 
 service AuthenticateAndPost {
-  rpc CheckUserAuthentication(UserInfo) returns (UserLoginResponse) {}
+  rpc CheckUserAuthentication(UserInfoLogin) returns (UserLoginResponse) {}
   rpc CreateUser(UserDetailInfo) returns (CreateUserResponse) {}
   rpc EditUser(UserDetailInfo) returns (EditUserResponse) {}
   rpc GetUserFollower(UserFollowerRequest) returns (UserFollower) {}
@@ -16,8 +16,8 @@ message UserInfoRequest {
     int64 user_id = 1;
 }
 
-message UserInfo {
-    string user_name = 1;
+message UserInfoLogin {
+    string user_email = 1;
     string user_password = 2;
 }
 
@@ -47,7 +47,8 @@ enum EditUserStatus {
 }
 
 message UserLoginResponse {
-    UserStatus status = 1;
+    string sessionId = 1;
+    UserStatus status = 2;
 }
 
 message CreateUserResponse {
