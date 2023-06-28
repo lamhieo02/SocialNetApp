@@ -25,7 +25,7 @@ func (service *authenAndPostService) RegisterUser(ctx context.Context, req *auth
 	}
 
 	// hash password before save to db
-	req.Password, _ = utilshasher.HashPassword(req.Password)
+	req.Password, req.Salt, _ = utilshasher.HashPassword(req.Password)
 
 	id, err := service.authenAndPostStorage.CreateUser(ctx, req)
 	

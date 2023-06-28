@@ -9,6 +9,7 @@ import (
 
 type AuthenAndPostService interface {
 	RegisterUser(ctx context.Context, req * authenandpostmodel.UserRegister) (*uint, error)
+	LoginUser(ctx context.Context, req *authenandpostmodel.UserLogin) (*string, error)
 }
 
 type authenAndPostHandler struct {
