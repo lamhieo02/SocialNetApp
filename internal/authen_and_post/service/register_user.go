@@ -14,6 +14,7 @@ func (service *authenAndPostService) RegisterUser(ctx context.Context, req *auth
 		"email": req.Email,
 	}
 
+	// check is duplicate email
 	newUser, err := service.authenAndPostStorage.FindDFindDataWithCondition(ctx, condition)
 	if err != nil {
 		return nil, err
