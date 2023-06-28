@@ -26,7 +26,7 @@ message UserDetailInfo {
     string user_name = 2;
     string first_name = 3;
     string last_name = 4;
-    int64 dob = 5;
+    string dob = 5;
     string email = 6;
     string password = 7;
 }
@@ -51,7 +51,8 @@ message UserLoginResponse {
 }
 
 message CreateUserResponse {
-    CreateUserStatus status = 1;
+    int64 user_id = 1;
+    CreateUserStatus status = 2;
 }
 
 message EditUserResponse {
@@ -81,4 +82,9 @@ message Post {
     string content_image_path = 4;
     bool visible = 5;
     int64 created_at = 6;
+}
+
+message ResponseError {
+    string error = 1;
+    int32 code = 2;
 }
