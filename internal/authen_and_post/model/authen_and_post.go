@@ -19,3 +19,13 @@ type UserLogin struct {
 	Email    string `gorm:"size:50;not null"`
 	Password string `gorm:"size:50;not null"`
 }
+
+type EditUser struct {
+	FirstName   string `gorm:"size:50;not null"`
+	LastName    string `gorm:"size:50;not null"`
+	DateOfBirth string `gorm:"not null"`
+}
+
+func (EditUser) TableName() string {
+	return "user"
+}
