@@ -9,6 +9,7 @@ import (
 type AuthenAndPostStorage interface {
 	CreateUser(context.Context, *authenandpostmodel.UserRegister)  (*uint, error)
 	FindDFindDataWithCondition(ctx context.Context, condition map[string]any) (*authenandpostmodel.UserRegister, error)
+	UpdateUser(ctx context.Context, condition map[string]any, user *authenandpostmodel.EditUser) error
 }
 
 type authenAndPostService struct {

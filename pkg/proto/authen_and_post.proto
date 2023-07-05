@@ -5,7 +5,7 @@ package authen_and_post;
 service AuthenticateAndPost {
   rpc CheckUserAuthentication(UserInfoLogin) returns (UserLoginResponse) {}
   rpc CreateUser(UserDetailInfo) returns (CreateUserResponse) {}
-  rpc EditUser(UserDetailInfo) returns (EditUserResponse) {}
+  rpc EditUser(UserEdit) returns (EditUserResponse) {}
   rpc GetUserFollower(UserFollowerRequest) returns (UserFollower) {}
   rpc GetPostDetail(GetPostRequest) returns (Post) {}
   rpc GetInfoUser(UserInfoRequest) returns (UserDetailInfo) {}
@@ -19,6 +19,13 @@ message UserInfoRequest {
 message UserInfoLogin {
     string user_email = 1;
     string user_password = 2;
+}
+
+message UserEdit {
+    uint32 id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string dob = 4;
 }
 
 message UserDetailInfo {
