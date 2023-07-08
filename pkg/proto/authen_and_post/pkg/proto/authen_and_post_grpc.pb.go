@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AuthenticateAndPostClient interface {
 	CheckUserAuthentication(ctx context.Context, in *UserInfoLogin, opts ...grpc.CallOption) (*UserLoginResponse, error)
 	CreateUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*CreateUserResponse, error)
-	EditUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*EditUserResponse, error)
+	EditUser(ctx context.Context, in *UserEdit, opts ...grpc.CallOption) (*EditUserResponse, error)
 	GetUserFollower(ctx context.Context, in *UserFollowerRequest, opts ...grpc.CallOption) (*UserFollower, error)
 	GetPostDetail(ctx context.Context, in *GetPostRequest, opts ...grpc.CallOption) (*Post, error)
 	GetInfoUser(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserDetailInfo, error)
@@ -56,7 +56,7 @@ func (c *authenticateAndPostClient) CreateUser(ctx context.Context, in *UserDeta
 	return out, nil
 }
 
-func (c *authenticateAndPostClient) EditUser(ctx context.Context, in *UserDetailInfo, opts ...grpc.CallOption) (*EditUserResponse, error) {
+func (c *authenticateAndPostClient) EditUser(ctx context.Context, in *UserEdit, opts ...grpc.CallOption) (*EditUserResponse, error) {
 	out := new(EditUserResponse)
 	err := c.cc.Invoke(ctx, "/authen_and_post.AuthenticateAndPost/EditUser", in, out, opts...)
 	if err != nil {
@@ -98,7 +98,7 @@ func (c *authenticateAndPostClient) GetInfoUser(ctx context.Context, in *UserInf
 type AuthenticateAndPostServer interface {
 	CheckUserAuthentication(context.Context, *UserInfoLogin) (*UserLoginResponse, error)
 	CreateUser(context.Context, *UserDetailInfo) (*CreateUserResponse, error)
-	EditUser(context.Context, *UserDetailInfo) (*EditUserResponse, error)
+	EditUser(context.Context, *UserEdit) (*EditUserResponse, error)
 	GetUserFollower(context.Context, *UserFollowerRequest) (*UserFollower, error)
 	GetPostDetail(context.Context, *GetPostRequest) (*Post, error)
 	GetInfoUser(context.Context, *UserInfoRequest) (*UserDetailInfo, error)
@@ -115,7 +115,7 @@ func (UnimplementedAuthenticateAndPostServer) CheckUserAuthentication(context.Co
 func (UnimplementedAuthenticateAndPostServer) CreateUser(context.Context, *UserDetailInfo) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedAuthenticateAndPostServer) EditUser(context.Context, *UserDetailInfo) (*EditUserResponse, error) {
+func (UnimplementedAuthenticateAndPostServer) EditUser(context.Context, *UserEdit) (*EditUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EditUser not implemented")
 }
 func (UnimplementedAuthenticateAndPostServer) GetUserFollower(context.Context, *UserFollowerRequest) (*UserFollower, error) {
@@ -177,7 +177,7 @@ func _AuthenticateAndPost_CreateUser_Handler(srv interface{}, ctx context.Contex
 }
 
 func _AuthenticateAndPost_EditUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserDetailInfo)
+	in := new(UserEdit)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -189,7 +189,7 @@ func _AuthenticateAndPost_EditUser_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/authen_and_post.AuthenticateAndPost/EditUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticateAndPostServer).EditUser(ctx, req.(*UserDetailInfo))
+		return srv.(AuthenticateAndPostServer).EditUser(ctx, req.(*UserEdit))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -7,14 +7,20 @@ import (
 )
 
 type AuthenAndPostStorage interface {
-	CreateUser(context.Context, *authenandpostmodel.UserRegister)  (*uint, error)
+	CreateUser(context.Context, *authenandpostmodel.UserRegister) (*uint, error)
 	FindDFindDataWithCondition(ctx context.Context, condition map[string]any) (*authenandpostmodel.UserRegister, error)
+}
+
+type AuthenUserCache interface {
+	Set(ctx context.Context, key string, value interface{}) error
+	Get(ctx context.Context, key string) (*string, error)
 }
 
 type authenAndPostService struct {
 	authenAndPostStorage AuthenAndPostStorage
+	authenUserCache      AuthenUserCache
 }
 
-func NewAuthenticateAndPostService(authenAndPostStorage AuthenAndPostStorage) *authenAndPostService {
-	return &authenAndPostService{authenAndPostStorage: authenAndPostStorage}
+func NewAuthenticateAndPostService(authenAndPostStorage AuthenAndPostStorage, authenUserCache AuthenUserCache) *authenAndPostService {
+	return &authenAndPostService{authenAndPostStorage: authenAndPostStorage, authenUserCache: authenUserCache}
 }
