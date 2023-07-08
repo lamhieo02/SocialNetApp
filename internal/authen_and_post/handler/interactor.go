@@ -8,7 +8,7 @@ import (
 )
 
 type AuthenAndPostService interface {
-	RegisterUser(ctx context.Context, req * authenandpostmodel.UserRegister) (*uint, error)
+	RegisterUser(ctx context.Context, req *authenandpostmodel.UserRegister) (*uint, error)
 	LoginUser(ctx context.Context, req *authenandpostmodel.UserLogin) (*string, error)
 	EditProfile(ctx context.Context, userId *uint, userEdit *authenandpostmodel.EditUser) (err error)
 
@@ -18,7 +18,6 @@ type authenAndPostHandler struct {
 	authen_and_post.UnimplementedAuthenticateAndPostServer
 	authenAndPostService AuthenAndPostService
 }
-
 
 func NewAuthenticateAndPostHandler(auAndPostSrv AuthenAndPostService) *authenAndPostHandler {
 	return &authenAndPostHandler{authenAndPostService: auAndPostSrv}

@@ -8,7 +8,7 @@ CREATE TABLE user (
   last_name VARCHAR(50) NOT NULL,
   date_of_birth VARCHAR(20) NOT NULL,
   email VARCHAR(50) NOT NULL ,
-  user_name VARCHAR(50) NOT NULL,
+  user_name VARCHAR(50) UNIQUE NOT NULL,
   `password` VARCHAR(250) NOT NULL,
   salt VARCHAR(250) NOT NULL,
   INDEX idx_username (user_name,email)
